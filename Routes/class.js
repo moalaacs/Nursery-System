@@ -1,32 +1,60 @@
 const express = require("express");
-const { body, query, param, validationResult } = require("express-validator");
 const router = express.Router();
+const { body, query, param, validationResult } = require("express-validator");
+const controller = require("./../Controller/class");
 const validator = require("./../Middleware/errorValidation");
-const controller = require('./../Controller/class');
 
-router.route("/class")
-  .get(controller.getAllClass)
-  .post([
-    body("id").isObject().withMessage("Id should be integer"),
-    body("name").isAlpha().withMessage("Name should be string")
-      .isLength({ max: 30 }).withMessage("length of name less Than 30"),
-    body("supervisor").isInt().withMessage("Id should be integer"),
-    body("children").isArray({ min: 10, max: 50 }).withMessage("class should have at least ten student and max 50 students"),
-  ],
-    validator, controller.addClass)
-  .put(controller.updateClass)
-  .delete(controller.deleteClass)
+router
+  .route("/class")
+  .get(controller.getAllClasses)
+  .post(
+    [
+      body("id").isInt().withMessage("ID should be number"),
+      body("name")
+        .isString()
+        .withMessage("Name should be string")
+        .isLength({ min: 3, max: 20 })
+        .withMessage("length of name should be > 3 & < 20"),
+      body("supervisor").isInt().withMessage("Supervisor ID should be integer"),
+      body("childs")
+        .isArray({ min: 10, max: 50 })
+        .withMessage("At least ten and maximum 50 students in the class"),
+    ],
+    validator,
+    controller.addClass
+  )
+  .patch(
+    [
+      body("id").isInt().withMessage("ID should be number"),
+      body("name")
+        .isString()
+        .withMessage("Name should be string")
+        .isLength({ min: 3, max: 20 })
+        .withMessage("length of name should be > 3 & < 20"),
+      body("supervisor").isInt().withMessage("ID should be integer"),
+      body("childs")
+        .isArray({ min: 10, max: 50 })
+        .withMessage(
+          "class should have at least ten student and max 50 students"
+        ),
+    ],
+    validator,
+    controller.updateClass
+  );
 
-router.get("/class/:id",
-  controller.getClassByID)
+router
+  .route("/class/:id")
+  .get(
+    param("id").isInt().withMessage("ID should be integer"),
+    validator,
+    controller.getClass
+  )
+  .delete(
+    param("id").isInt().withMessage("ID should be integer"),
+    validator,
+    controller.deleteClass
+  );
 
-router.delete("/class/:id",
-  validator,
-  controller.deleteClassByID)
+// router.get("/classTeacher/:id", controller.getTeacherClass);
 
-router.get("/classchildern/:id",
-  controller.getClassChildren)
-
-router.get("/classTeacher/:id",
-  controller.getClassTeacher)
 module.exports = router;

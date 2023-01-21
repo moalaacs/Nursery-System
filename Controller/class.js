@@ -1,35 +1,70 @@
-const { response } = require("express");
+const { response, json, request } = require("express");
+const mongoose = require("mongoose");
+require("./../Model/class");
+const classSchema = mongoose.model("class");
 
-exports.getAllClass = (request, response) => {
-  response.status(200).json({ message: "Fetch all Childrens" });
-}
+exports.getAllClasses = (request, response, next) => {
+  classSchema
+    .find()
+    .then((result) => {
+      response.status(200).json(result);
+    })
+    .catch((error) => next(error));
+};
 
-exports.addClass = (request, response) => {
-  response.status(201).json({ message: "Add Childrens" });
-}
+exports.getClass = (request, response, next) => {
+  classSchema
+    .findById(request.params.id)
+    .then((result) => {
+      response.status(200).json(result);
+    })
+    .catch((error) => next(error));
+};
 
-exports.updateClass = (request, response) => {
-  response.status(200).json({ message: "Update Childrens" });
-}
+exports.addClass = (request, response, next) => {
+  let newClass = new classSchema({
+    _id: request.body.id,
+    name: request.body.name,
+    supervisor: request.body.supervisor,
+    childs: request.body.childs,
+  });
+  newClass
+    .save()
+    .then((result) => {
+      response.status(201).json(result);
+    })
+    .catch((error) => next(error));
+};
 
-exports.deleteClass = (request, response) => {
-  response.status(200).json({ message: "Delete Childrens" });
-}
+exports.updateClass = (request, response, next) => {
+  classSchema
+    .updateOne(
+      {
+        _id: request.body.id,
+      },
+      {
+        $set: {
+          name: request.body.name,
+          supervisor: request.body.supervisor,
+          childs: request.body.childs,
+        },
+      }
+    )
+    .then((result) => {
+      response.status(201).json(result);
+    })
+    .catch((error) => next(error));
+};
 
-exports.getClassByID = (request, response, next) => {
-  response.status(201).json({ data: request.params.id })
-}
+exports.deleteClass = (request, response, next) => {
+  classSchema
+    .findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(200).json(result);
+    })
+    .catch((error) => next(error));
+};
 
-exports.deleteClassByID = (request, response, next) => {
-
-  response.status(200).json({ deletedClassData: request.params.id })
-}
-exports.getClassByID = (request, response, next) => {
-  response.status(200).json({ data: request.params.id })
-}
-exports.getClassChildren = (request, response, next) => {
-  response.status(200).json({ data: request.params.children })
-}
-exports.getClassTeacher = (request, response, next) => {
-  response.status(200).json({ data: request.params.supervisor })
-}
+// exports.getTeacherClass = (request, response, next) => {
+//   response.status(200).json({ data: request.params.supervisor });
+// };
