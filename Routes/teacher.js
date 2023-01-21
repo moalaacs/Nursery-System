@@ -9,37 +9,46 @@ router
   .get(controller.getAllTeachers)
   .post(
     [
-      body("id").isObject().withMessage("ID should be number"),
-      body("name").isString().withMessage("Name should be string"),
+      body("id").isInt().withMessage("ID should be number"),
+      body("name")
+        .isString()
+        .withMessage("Name should be string")
+        .isLength({ min: 3, max: 15 })
+        .withMessage("length of name should be > 5 & < 15"),
       body("password").isStrongPassword().withMessage("Weak password"),
       body("email").isEmail().withMessage("Not valid email"),
-      body("image").isURL().withMessage("Not valid image"),
+      body("image").isString().withMessage("Not valid image"),
     ],
     validator,
     controller.addTeacher
   )
   .patch(
     [
-      body("id").isObject().withMessage("Id should object id mongodb"),
-      body("name").isString().withMessage("full name should string")
-        .isLength({ min: 5, max: 15 }).withMessage("length of name > 5 & < 15"),
-      body("password").isLength({ min: 8 }).withMessage("length must be >= 8"),
-      body("email").isEmail().withMessage("Invalid email"),
-      body("image").isString().withMessage("image name must be string")
-    ]
-    ,
+      body("id").isInt().withMessage("Id should object id mongodb"),
+      body("name")
+        .isString()
+        .withMessage("Name should be string")
+        .isLength({ min: 3, max: 15 })
+        .withMessage("length of name should be > 5 & < 15"),
+      body("password").isStrongPassword().withMessage("Weak password"),
+      body("email").isEmail().withMessage("Not valid email"),
+      body("image").isString().withMessage("Not valid image"),
+    ],
     validator,
     controller.updateTeacher
-  )
-// router.route("/teachers/:id")
-//   .get(
-//     param("id").isInt().withMessage("id should be integer"),
-//     validator,
-//     controller.show)
-//   .delete(param("id").isInt().withMessage("id should be integer"),
-//     validator,
-//     controller.destroy);
+  );
 
-.delete(controller.deleteTeacher);
+router
+  .route("/teacher/:id")
+  .get(
+    param("id").isInt().withMessage("id should be integer"),
+    validator,
+    controller.getTeacher
+  )
+  .delete(
+    param("id").isInt().withMessage("id should be integer"),
+    validator,
+    controller.deleteTeacher
+  );
 
 module.exports = router;
