@@ -14,7 +14,7 @@ router
         .isString()
         .withMessage("Name should be string")
         .isLength({ min: 3, max: 15 })
-        .withMessage("length of name should be > 5 & < 15"),
+        .withMessage("length of name should be > 3 & < 15"),
       body("password").isStrongPassword().withMessage("Weak password"),
       body("email").isEmail().withMessage("Not valid email"),
       body("image").isString().withMessage("Not valid image"),
@@ -24,12 +24,12 @@ router
   )
   .patch(
     [
-      body("id").isInt().withMessage("Id should object id mongodb"),
+      body("id").isInt().withMessage("ID should be number"),
       body("name")
         .isString()
         .withMessage("Name should be string")
         .isLength({ min: 3, max: 15 })
-        .withMessage("length of name should be > 5 & < 15"),
+        .withMessage("length of name should be > 3 & < 15"),
       body("password").isStrongPassword().withMessage("Weak password"),
       body("email").isEmail().withMessage("Not valid email"),
       body("image").isString().withMessage("Not valid image"),
@@ -41,12 +41,12 @@ router
 router
   .route("/teacher/:id")
   .get(
-    param("id").isInt().withMessage("id should be integer"),
+    param("id").isInt().withMessage("ID should be integer"),
     validator,
     controller.getTeacher
   )
   .delete(
-    param("id").isInt().withMessage("id should be integer"),
+    param("id").isInt().withMessage("ID should be integer"),
     validator,
     controller.deleteTeacher
   );

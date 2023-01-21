@@ -14,6 +14,4 @@ const schema = new mongoose.Schema({
   image: { type: String },
 });
 
-
-// this is to name our document in db and assign our schmea to it
 mongoose.model("teacher", schema);
